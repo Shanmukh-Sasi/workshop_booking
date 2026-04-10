@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 # Local Imports
 from workshop_app.models import (
@@ -129,3 +129,66 @@ def team_stats(request, team_id=None):
         {'team_labels': team_labels, "ws_count": ws_count, 'all_teams': teams,
          'team_id': team.id}
     )
+
+def api_public_stats(request):
+    """
+    JSON API for React frontend to fetch statistics.
+    Available at /statistics/api/public/
+    """
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+    state = request.GET.get('state')
+    workshoptype = request.GET.get('workshop_type')
+    page = request.GET.get('page', 1)
+
+    workshops = Workshop.objects.filter(status=1)
+
+    if from_date and to_date:
+        workshops = workshops.filter(date__range=(from_date, to_date))
+        if state:
+            workshops = workshops.filter(coordinator__profile__state=state)
+        if workshoptype:
+            workshops = workshops.filter(workshop_type_id=workshoptype)
+    else:
+        today = timezone.now()
+        upto = today + dt.timedelta(days=15)
+        workshops = workshops.filter(date__range=(today, upto)).order_by("date")
+
+    ws_states, ws_count = Workshop.objects.get_workshops_by_state(workshops)
+    ws_type, ws_type_count = Workshop.objects.get_workshops_by_type(workshops)
+
+    paginator = Paginator(workshops, 30)
+    current_page = paginator.get_page(page)
+
+    data = []
+    for w in current_page:
+        data.append({
+            "id": w.id,
+            "coordinator": w.coordinator.get_full_name(),
+            "institute": w.coordinator.profile.institute if hasattr(w.coordinator, 'profile') else "",
+            "instructor": w.instructor.get_full_name() if w.instructor else "",
+            "type": w.workshop_type.name if w.workshop_type else "",
+            "date": w.date.strftime("%b %d, %Y") if w.date else ""
+        })
+
+    filter_options = {
+        "states": [{"id": state[0], "name": state[1]} for state in states],
+        "workshop_types": [{"id": wt.id, "name": wt.name} for wt in WorkshopType.objects.all()]
+    }
+
+    return JsonResponse({
+        "workshops": data,
+        "filter_options": filter_options,
+        "charts": {
+            "state_labels": ws_states,
+            "state_data": ws_count,
+            "type_labels": ws_type,
+            "type_data": ws_type_count
+        },
+        "pagination": {
+            "page": current_page.number,
+            "total_pages": paginator.num_pages,
+            "has_next": current_page.has_next(),
+            "has_previous": current_page.has_previous(),
+        }
+    })

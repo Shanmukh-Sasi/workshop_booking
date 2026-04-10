@@ -45,3 +45,10 @@ db.sqlite3
 #images/gif
 *.png
 *.gif
+
+venv/
+env/
+__pycache__/
+*.pyc
+node_modules/
+db.sqlite3

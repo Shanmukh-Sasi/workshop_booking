@@ -5,49 +5,64 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-md-offset-6">
-                <div class="card">
-                    <div class="card-body">
-                        <form class="px-3 py-3" method="post">
-                        {% csrf_token %}
-                        {% if form.errors %}
-                            {% for field in form %}
-                                {% for error in field.errors %}
-                                    <div class="alert alert-dismissible alert-danger">
-                                        <button type="button" class="close" data-dismiss="alert">
-                                            <i class="fa fa-close"></i>
-                                        </button>
-                                        <strong>{{ error|escape }}</strong>
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                            {% for error in form.non_field_errors %}
-                                <div class="alert alert-dismissible alert-danger">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <i class="fa fa-close"></i>
-                                    </button>
-                                    <strong>{{ error|escape }}</strong>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                        <div class="form-group">
-                          <label for="id_username">Username</label>
-                          {{ form.username }}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-icon">
+                <span class="material-icons">login</span>
+            </div>
+            <h2>Welcome Back</h2>
+        </div>
+        <div class="login-body">
+            <form class="login-form" method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-dismissible alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span class="material-icons">close</span>
+                                </button>
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-dismissible alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span class="material-icons">close</span>
+                            </button>
+                            <strong>{{ error|escape }}</strong>
                         </div>
-                        <div class="form-group">
-                          <label for="id_password">Password</label>
-                          {{ form.password }}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Sign in</button>
-                        </form>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'workshop_app:register' %}">New around here? Sign up</a>
-                        <a class="dropdown-item" href="{% url 'password_reset' %}">Forgot password?</a>
-                    </div>
-                </div>  
+                    {% endfor %}
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    {{ form.username }}
+                    <span class="username-icon"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password">Password</label>
+                    {{ form.password }}
+                    <span class="password-icon"></span>
+                </div>
+                
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+            
+            <div class="login-footer">
+                <a href="{% url 'workshop_app:register' %}">
+                    <span class="material-icons" style="font-size: 1rem; vertical-align: middle; margin-right: 0.25rem;">person_add</span>
+                    New around here? Sign up
+                </a>
+                <a href="{% url 'password_reset' %}">
+                    <span class="material-icons" style="font-size: 1rem; vertical-align: middle; margin-right: 0.25rem;">help_outline</span>
+                    Forgot password?
+                </a>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
