@@ -46,6 +46,9 @@ db.sqlite3
 *.png
 *.gif
 
+# allow screenshots
+!ScreenShots/*.png
+
 venv/
 env/
 __pycache__/
