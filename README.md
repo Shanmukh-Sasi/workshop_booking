@@ -128,15 +128,15 @@ http://127.0.0.1:8000
 ## Screenshots
 
 
-![Before Home](ScreenShots/before_home.png)
+![Before Home](ScreenShots/Before_Home.png)
 
-![Before Statistics](ScreenShots/before_statistics.png)
+![Before Statistics](ScreenShots/Before_Statistics.png)
 
 ---
 
 ## After Redesign
 
-![After Home](ScreenShots/after_home.png)
+![After Home](ScreenShots/After_Home.png)
 
-![After Statistics](ScreenShots/after_statistics.png)
-![After Graph](ScreenShots/after_graph.png)
+![After Statistics](ScreenShots/After_Statistics.png)
+![After Graph](ScreenShots/After_Graphs.png)
